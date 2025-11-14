@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Product</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <h1>Simple Shop</h1>
+  </header>
+  <main class="container product-page">
+    <a href="Website.html" class="back">← Back to products</a>
+    <div id="product-detail"></div>
+  </main>
+  <script>
+    function qs(name) {
+      const params = new URLSearchParams(location.search);
+      return params.get(name);
+    }
+
+    const id = qs('id');
+    const container = document.getElementById('product-detail');
+
+    function loadProducts() {
+      try {
+        return JSON.parse(localStorage.getItem('products') || '[]');
+      } catch (e) { return []; }
+    }
+
+    const products = loadProducts();
+    const product = products.find(p => p.id === id);
+
+    if (!product) {
+      container.innerHTML = '<p>Product not found.</p>';
+    } else {
+      container.innerHTML = `
+        <div class="product-full">
+          ${product.image ? `<img src="${product.image}" alt="${product.name}">` : ''}
+          <div class="product-info">
+            <h2>${product.name}</h2>
+            <p class="price">$${Number(product.price).toFixed(2)}</p>
+            <p class="desc">${product.description || ''}</p>
+          </div>
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>

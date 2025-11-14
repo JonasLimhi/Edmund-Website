@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1" />
+	<title>Simple Shop - Products</title>
+	<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+	<header class="site-header">
+		<h1>Simple Shop</h1>
+		<p>Create product pages and view them.</p>
+	</header>
+
+	<main class="container">
+		<section class="create">
+			<h2>Add Product</h2>
+			<form id="product-form">
+				<label>Product name <input id="name" required></label>
+				<label>Price (USD) <input id="price" type="number" step="0.01" required></label>
+				<label>Image URL <input id="image" placeholder="https://... (optional)"></label>
+				<label>Description <textarea id="description"></textarea></label>
+				<div class="form-actions">
+					<button type="submit">Add Product</button>
+					<button type="button" id="clear-storage">Clear All</button>
+				</div>
+			</form>
+		</section>
+
+		<section class="list">
+			<h2>Products</h2>
+			<div id="products" class="products-grid"></div>
+		</section>
+	</main>
+
+	<script src="app.js"></script>
+</body>
+</html>
