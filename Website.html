@@ -1,38 +1,174 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width,initial-scale=1" />
-	<title>Simple Shop - Products</title>
-	<link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FB Live Shop - Product Listing</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
-	<header class="site-header">
-		<h1>Simple Shop</h1>
-		<p>Create product pages and view them.</p>
-	</header>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="Website.html">FB Live Shop</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="Website.html">Products</a>
+                    </li>
+                    <li class="nav-item" id="addProductNav">
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#addProductModal">Add Product</a>
+                    </li>
+                    <li class="nav-item" id="authNav">
+                        <a class="nav-link" href="login.html">Login</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-	<main class="container">
-		<section class="create">
-			<h2>Add Product</h2>
-			<form id="product-form">
-				<label>Product name <input id="name" required></label>
-				<label>Price (USD) <input id="price" type="number" step="0.01" required></label>
-				<label>Image URL <input id="image" placeholder="https://... (optional)"></label>
-				<label>Description <textarea id="description"></textarea></label>
-				<div class="form-actions">
-					<button type="submit">Add Product</button>
-					<button type="button" id="clear-storage">Clear All</button>
-				</div>
-			</form>
-		</section>
+    <!-- Main Content -->
+    <main class="container my-5">
+        <h1 class="mb-4">Product Listing</h1>
+        
+        <div id="productContainer" class="row">
+            <!-- Products will be displayed here -->
+        </div>
 
-		<section class="list">
-			<h2>Products</h2>
-			<div id="products" class="products-grid"></div>
-		</section>
-	</main>
+        <div id="emptyMessage" class="alert alert-info text-center">
+            No products available yet. <a href="#" id="createFirstProductLink" style="display: none;" data-bs-toggle="modal" data-bs-target="#addProductModal">Create one now!</a>
+        </div>
+    </main>
 
-	<script src="app.js"></script>
+    <!-- Add Product Modal -->
+    <div class="modal fade" id="addProductModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addProductForm">
+                        <div class="mb-3">
+                            <label for="productName" class="form-label">Product Name</label>
+                            <input type="text" class="form-control" id="productName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="productPrice" class="form-label">Price ($)</label>
+                            <input type="number" class="form-control" id="productPrice" min="0" step="0.01" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="productImage" class="form-label">Image URL</label>
+                            <input type="url" class="form-control" id="productImage" placeholder="https://example.com/image.jpg">
+                        </div>
+                        <div class="mb-3">
+                            <label for="productDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="productDescription" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="productColors" class="form-label">Available Colors (comma separated)</label>
+                            <input type="text" class="form-control" id="productColors" placeholder="Red,Blue,Black">
+                        </div>
+                        <div class="mb-3">
+                            <label for="productSizes" class="form-label">Available Sizes (comma separated)</label>
+                            <input type="text" class="form-control" id="productSizes" placeholder="S,M,L">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="createProductBtn">Create Product</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Product Modal -->
+    <div class="modal fade" id="editProductModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editProductForm">
+                        <div class="mb-3">
+                            <label for="editProductName" class="form-label">Product Name</label>
+                            <input type="text" class="form-control" id="editProductName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editProductPrice" class="form-label">Price ($)</label>
+                            <input type="number" class="form-control" id="editProductPrice" min="0" step="0.01" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editProductImage" class="form-label">Image URL</label>
+                            <input type="url" class="form-control" id="editProductImage">
+                        </div>
+                        <div class="mb-3">
+                            <label for="editProductDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="editProductDescription" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editProductColors" class="form-label">Available Colors (comma separated)</label>
+                            <input type="text" class="form-control" id="editProductColors" placeholder="Red,Blue,Black">
+                        </div>
+                        <div class="mb-3">
+                            <label for="editProductSizes" class="form-label">Available Sizes (comma separated)</label>
+                            <input type="text" class="form-control" id="editProductSizes" placeholder="S,M,L">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="saveProductBtn">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Facebook Link Modal -->
+    <div class="modal fade" id="fbLinkModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Link Facebook Account</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="fbLinkForm">
+                        <div class="mb-3">
+                            <label for="fbLinkEmail" class="form-label">Facebook Email</label>
+                            <input type="email" class="form-control" id="fbLinkEmail" required>
+                        </div>
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-primary">Link Account</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
+    <script>
+        const fbLinkForm = document.getElementById('fbLinkForm');
+        if (fbLinkForm) {
+            fbLinkForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const email = document.getElementById('fbLinkEmail').value.trim();
+                linkFacebookToCurrentUser(email);
+                const modal = bootstrap.Modal.getInstance(document.getElementById('fbLinkModal'));
+                if (modal) modal.hide();
+            });
+        }
+    </script>
 </body>
 </html>

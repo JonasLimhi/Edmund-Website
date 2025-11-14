@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Sign Up - FB Live Shop</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="Website.html">FB Live Shop</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="Website.html">Products</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Admin Signup Container -->
+    <main class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-5">
+                <div class="card border-danger">
+                    <div class="card-body p-5">
+                        <h2 class="card-title text-center mb-1 text-danger">Admin Sign Up</h2>
+                        <p class="text-center text-muted small mb-4">Create a new admin account</p>
+                        
+                        <form id="adminSignupForm">
+                            <div class="mb-3">
+                                <label for="adminUsername" class="form-label">Admin Username</label>
+                                <input type="text" class="form-control" id="adminUsername" required>
+                                <small class="form-text text-muted">Must be at least 3 characters</small>
+                            </div>
+                            <div class="mb-3">
+                                <label for="adminPassword" class="form-label">Admin Password</label>
+                                <input type="password" class="form-control" id="adminPassword" required>
+                                <small class="form-text text-muted">Must be at least 6 characters</small>
+                            </div>
+                            <div class="mb-3">
+                                <label for="adminConfirmPassword" class="form-label">Confirm Password</label>
+                                <input type="password" class="form-control" id="adminConfirmPassword" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="adminSecurityCode" class="form-label">Admin Security Code</label>
+                                <input type="password" class="form-control" id="adminSecurityCode" required>
+                                <small class="form-text text-muted">Ask your current admin for the security code</small>
+                            </div>
+                            <button type="submit" class="btn btn-danger w-100 mb-3">Create Admin Account</button>
+                        </form>
+
+                        <div id="adminSignupMessage" class="alert" style="display: none;"></div>
+
+                        <p class="text-center">
+                            Already have an admin account? <a href="login.html">Login here</a>
+                        </p>
+                        <hr>
+                        <p class="text-center text-muted small">
+                            Regular customer? <a href="signup.html">Sign up as customer</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
+    <script>
+        // Check if user is already logged in
+        if (getCurrentUser()) {
+            window.location.href = 'Website.html';
+        }
+
+        document.getElementById('adminSignupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('adminUsername').value.trim();
+            const password = document.getElementById('adminPassword').value;
+            const confirmPassword = document.getElementById('adminConfirmPassword').value;
+            const securityCode = document.getElementById('adminSecurityCode').value;
+            const messageDiv = document.getElementById('adminSignupMessage');
+
+            // Validation
+            if (username.length < 3) {
+                showMessage(messageDiv, 'Username must be at least 3 characters', 'danger');
+                return;
+            }
+
+            if (password.length < 6) {
+                showMessage(messageDiv, 'Password must be at least 6 characters', 'danger');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showMessage(messageDiv, 'Passwords do not match', 'danger');
+                return;
+            }
+
+            // Check security code (stored in localStorage, initialized as 'admin-secret')
+            const storedSecurityCode = localStorage.getItem('adminSecurityCode') || 'admin-secret';
+            if (securityCode !== storedSecurityCode) {
+                showMessage(messageDiv, 'Invalid security code', 'danger');
+                return;
+            }
+
+            // Get admins from localStorage
+            const admins = JSON.parse(localStorage.getItem('admins') || '[]');
+            
+            // Check if username already exists
+            if (admins.find(a => a.username === username)) {
+                showMessage(messageDiv, 'Admin username already exists', 'danger');
+                return;
+            }
+
+            // Hash password and create new admin
+            const hashedPassword = await hashPassword(password);
+            admins.push({ username, password: hashedPassword });
+            localStorage.setItem('admins', JSON.stringify(admins));
+
+            showMessage(messageDiv, 'Admin account created successfully! Redirecting to login...', 'success');
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 2000);
+        });
+
+        function showMessage(element, message, type) {
+            element.textContent = message;
+            element.className = `alert alert-${type}`;
+            element.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

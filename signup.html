@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - FB Live Shop</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="Website.html">FB Live Shop</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="Website.html">Products</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Signup Container -->
+    <main class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-5">
+                <div class="card">
+                    <div class="card-body p-5">
+                        <h2 class="card-title text-center mb-4">Customer Sign Up</h2>
+                        
+                        <form id="signupForm">
+                            <div class="mb-3">
+                                <label for="signupUsername" class="form-label">Username</label>
+                                <input type="text" class="form-control" id="signupUsername" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="signupPassword" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="signupPassword" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="signupConfirmPassword" class="form-label">Confirm Password</label>
+                                <input type="password" class="form-control" id="signupConfirmPassword" required>
+                            </div>
+                            <input type="hidden" id="signupRole" value="customer">
+                            <button type="submit" class="btn btn-primary w-100 mb-3">Create Customer Account</button>
+                        </form>
+
+                        <div id="signupMessage" class="alert" style="display: none;"></div>
+
+                        <p class="text-center">
+                            Already have an account? <a href="login.html">Login here</a>
+                        </p>
+                        <hr>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-primary" id="fbSignupBtn" type="button">Sign up with Facebook</button>
+                        </div>
+                        <p class="text-center text-muted small mt-3">
+                            Are you an admin? <a href="admin-signup.html">Create admin account</a>
+                        </p>
+
+                        <!-- Facebook Signup Modal (simulated) -->
+                        <div class="modal fade" id="fbSignupModal" tabindex="-1">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Sign Up with Facebook</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form id="fbSignupForm">
+                                            <div class="mb-3">
+                                                <label for="fbSignupEmail" class="form-label">Facebook Email</label>
+                                                <input type="email" class="form-control" id="fbSignupEmail" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="fbSignupName" class="form-label">Facebook Name (optional)</label>
+                                                <input type="text" class="form-control" id="fbSignupName">
+                                            </div>
+                                            <div class="text-end">
+                                                <button type="submit" class="btn btn-primary">Continue</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
+    <script>
+        // Check if user is already logged in
+        if (getCurrentUser()) {
+            window.location.href = 'Website.html';
+        }
+
+        document.getElementById('signupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('signupUsername').value.trim();
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('signupConfirmPassword').value;
+            const messageDiv = document.getElementById('signupMessage');
+
+            // Validation
+            if (username.length < 3) {
+                showMessage(messageDiv, 'Username must be at least 3 characters', 'danger');
+                return;
+            }
+
+            if (password.length < 6) {
+                showMessage(messageDiv, 'Password must be at least 6 characters', 'danger');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showMessage(messageDiv, 'Passwords do not match', 'danger');
+                return;
+            }
+
+            // Get users from localStorage
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            
+            // Check if username already exists
+            if (users.find(u => u.username === username)) {
+                showMessage(messageDiv, 'Username already exists', 'danger');
+                return;
+            }
+
+            // Hash password and create new user
+            const hashedPassword = await hashPassword(password);
+            users.push({ username, password: hashedPassword, role: 'customer' });
+            localStorage.setItem('users', JSON.stringify(users));
+
+            showMessage(messageDiv, 'Account created successfully! Redirecting to login...', 'success');
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 2000);
+        });
+
+        function showMessage(element, message, type) {
+            element.textContent = message;
+            element.className = `alert alert-${type}`;
+            element.style.display = 'block';
+        }
+
+        // Facebook (simulated) signup flow
+        const fbSignupBtn = document.getElementById('fbSignupBtn');
+        if (fbSignupBtn) {
+            fbSignupBtn.addEventListener('click', () => {
+                const modalEl = document.getElementById('fbSignupModal');
+                const modal = new bootstrap.Modal(modalEl);
+                modal.show();
+            });
+        }
+
+        const fbSignupForm = document.getElementById('fbSignupForm');
+        if (fbSignupForm) {
+            fbSignupForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = document.getElementById('fbSignupEmail').value.trim();
+                const name = document.getElementById('fbSignupName').value.trim();
+                await fbLogin(email, name);
+            });
+        }
+    </script>
+</body>
+</html>

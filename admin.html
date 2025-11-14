@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - FB Live Shop</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-danger">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="admin.html">FB Live Shop - Admin Dashboard</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="admin.html">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="Website.html">Public Store</a>
+                    </li>
+                    <li class="nav-item" id="authNav">
+                        <a class="nav-link" href="login.html">Login</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container-fluid my-5">
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <h1 class="mb-4">Admin Dashboard</h1>
+                
+                <!-- Stats -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h5 class="card-title">Total Products</h5>
+                                <p class="card-text h3" id="totalProducts">0</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h5 class="card-title">Total Users</h5>
+                                <p class="card-text h3" id="totalUsers">0</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h5 class="card-title">Total Value</h5>
+                                <p class="card-text h3" id="totalValue">$0</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h5 class="card-title">Total Admins</h5>
+                                <p class="card-text h3" id="totalAdmins">0</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Products Management Section -->
+                <div class="card mb-4">
+                    <div class="card-header bg-danger text-white">
+                        <h5 class="mb-0">Product Management</h5>
+                    </div>
+                    <div class="card-body">
+                        <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addProductModal">Add New Product</button>
+                        <div class="table-responsive">
+                            <table class="table table-striped" id="productsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Product Name</th>
+                                        <th>Price</th>
+                                        <th>Description</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="productsTableBody">
+                                    <!-- Products will be displayed here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Users Management Section -->
+                <div class="card mb-4">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">Customer Management</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped" id="usersTable">
+                                <thead>
+                                    <tr>
+                                        <th>Username</th>
+                                        <th>Role</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="usersTableBody">
+                                    <!-- Users will be displayed here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Management Section -->
+                <div class="card mb-4">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0">Admin Management</h5>
+                    </div>
+                    <div class="card-body">
+                        <button class="btn btn-warning mb-3" data-bs-toggle="modal" data-bs-target="#addAdminModal">Add New Admin</button>
+                        <div class="table-responsive">
+                            <table class="table table-striped" id="adminsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Admin Username</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="adminsTableBody">
+                                    <!-- Admins will be displayed here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add Product Modal -->
+    <div class="modal fade" id="addProductModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addProductForm">
+                        <div class="mb-3">
+                            <label for="productName" class="form-label">Product Name</label>
+                            <input type="text" class="form-control" id="productName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="productPrice" class="form-label">Price ($)</label>
+                            <input type="number" class="form-control" id="productPrice" min="0" step="0.01" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="productImage" class="form-label">Image URL</label>
+                            <input type="url" class="form-control" id="productImage" placeholder="https://example.com/image.jpg">
+                        </div>
+                        <div class="mb-3">
+                            <label for="productDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="productDescription" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="createProductBtn">Create Product</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Product Modal -->
+    <div class="modal fade" id="editProductModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editProductForm">
+                        <div class="mb-3">
+                            <label for="editProductName" class="form-label">Product Name</label>
+                            <input type="text" class="form-control" id="editProductName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editProductPrice" class="form-label">Price ($)</label>
+                            <input type="number" class="form-control" id="editProductPrice" min="0" step="0.01" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editProductImage" class="form-label">Image URL</label>
+                            <input type="url" class="form-control" id="editProductImage">
+                        </div>
+                        <div class="mb-3">
+                            <label for="editProductDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="editProductDescription" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="saveProductBtn">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Admin Modal -->
+    <div class="modal fade" id="addAdminModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Admin</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addAdminForm">
+                        <div class="mb-3">
+                            <label for="adminUsername" class="form-label">Admin Username</label>
+                            <input type="text" class="form-control" id="adminUsername" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="adminPassword" class="form-label">Admin Password</label>
+                            <input type="password" class="form-control" id="adminPassword" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="createAdminBtn">Create Admin</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
+    <script>
+        // Check if admin is logged in
+        const currentUser = getCurrentUser();
+        if (!currentUser || currentUser.role !== 'admin') {
+            window.location.href = 'login.html';
+        }
+
+        // Initialize admin dashboard
+        document.addEventListener('DOMContentLoaded', () => {
+            updateAuthNav();
+            displayAdminDashboard();
+            setupAdminEventListeners();
+        });
+
+        function displayAdminDashboard() {
+            const products = getAllProducts();
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const admins = JSON.parse(localStorage.getItem('admins') || '[]');
+
+            // Update stats
+            document.getElementById('totalProducts').textContent = products.length;
+            document.getElementById('totalUsers').textContent = users.length;
+            document.getElementById('totalValue').textContent = '$' + products.reduce((sum, p) => sum + p.price, 0).toFixed(2);
+            document.getElementById('totalAdmins').textContent = admins.length;
+
+            // Display products table
+            const productsTableBody = document.getElementById('productsTableBody');
+            productsTableBody.innerHTML = products.map(product => `
+                <tr>
+                    <td>${escapeHtml(product.name)}</td>
+                    <td>$${product.price.toFixed(2)}</td>
+                    <td>${escapeHtml(product.description || 'N/A').substring(0, 30)}...</td>
+                    <td>
+                        <button class="btn btn-sm btn-warning" onclick="editProductAdmin('${product.id}')">Edit</button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteProductAdmin('${product.id}')">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+
+            // Display users table
+            const usersTableBody = document.getElementById('usersTableBody');
+            usersTableBody.innerHTML = users.map(user => `
+                <tr>
+                    <td>${escapeHtml(user.username)}</td>
+                    <td><span class="badge bg-primary">Customer</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-danger" onclick="deleteUser('${user.username}')">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+
+            // Display admins table
+            const adminsTableBody = document.getElementById('adminsTableBody');
+            adminsTableBody.innerHTML = admins.map(admin => `
+                <tr>
+                    <td>${escapeHtml(admin.username)}</td>
+                    <td>
+                        ${admin.username === 'admin' ? '<span class="badge bg-danger">Default Admin</span>' : 
+                        '<button class="btn btn-sm btn-danger" onclick="deleteAdmin(\''+admin.username+'\')">Delete</button>'}
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function setupAdminEventListeners() {
+            // Add product
+            const createProductBtn = document.getElementById('createProductBtn');
+            if (createProductBtn) {
+                createProductBtn.addEventListener('click', () => {
+                    const name = document.getElementById('productName').value.trim();
+                    const price = document.getElementById('productPrice').value;
+                    const image = document.getElementById('productImage').value.trim();
+                    const description = document.getElementById('productDescription').value.trim();
+
+                    if (!name || !price) {
+                        alert('Please fill in required fields');
+                        return;
+                    }
+
+                    createProduct(name, price, image, description);
+                    displayAdminDashboard();
+                    document.getElementById('addProductForm').reset();
+                    
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('addProductModal'));
+                    if (modal) modal.hide();
+                });
+            }
+
+            // Add admin
+            const createAdminBtn = document.getElementById('createAdminBtn');
+            if (createAdminBtn) {
+                createAdminBtn.addEventListener('click', async () => {
+                    const username = document.getElementById('adminUsername').value.trim();
+                    const password = document.getElementById('adminPassword').value;
+
+                    if (!username || !password) {
+                        alert('Please fill in all fields');
+                        return;
+                    }
+
+                    const admins = JSON.parse(localStorage.getItem('admins') || '[]');
+                    if (admins.find(a => a.username === username)) {
+                        alert('Admin already exists');
+                        return;
+                    }
+
+                    const hashedPassword = await hashPassword(password);
+                    admins.push({ username, password: hashedPassword });
+                    localStorage.setItem('admins', JSON.stringify(admins));
+
+                    displayAdminDashboard();
+                    document.getElementById('addAdminForm').reset();
+                    
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('addAdminModal'));
+                    if (modal) modal.hide();
+                });
+            }
+        }
+
+        function editProductAdmin(id) {
+            const product = getProductById(id);
+            if (!product) return;
+
+            document.getElementById('editProductName').value = product.name;
+            document.getElementById('editProductPrice').value = product.price;
+            document.getElementById('editProductImage').value = product.image;
+            document.getElementById('editProductDescription').value = product.description || '';
+
+            const modal = new bootstrap.Modal(document.getElementById('editProductModal'));
+            modal.show();
+
+            const saveBtn = document.getElementById('saveProductBtn');
+            saveBtn.onclick = () => {
+                const name = document.getElementById('editProductName').value.trim();
+                const price = document.getElementById('editProductPrice').value;
+                const image = document.getElementById('editProductImage').value.trim();
+                const description = document.getElementById('editProductDescription').value.trim();
+
+                if (!name || !price) {
+                    alert('Please fill in required fields');
+                    return;
+                }
+
+                updateProduct(id, name, price, image, description);
+                displayAdminDashboard();
+                modal.hide();
+            };
+        }
+
+        function deleteProductAdmin(id) {
+            if (confirm('Are you sure you want to delete this product?')) {
+                deleteProduct(id);
+                displayAdminDashboard();
+            }
+        }
+
+        function deleteUser(username) {
+            if (confirm('Are you sure you want to delete this user?')) {
+                const users = JSON.parse(localStorage.getItem('users') || '[]');
+                const filtered = users.filter(u => u.username !== username);
+                localStorage.setItem('users', JSON.stringify(filtered));
+                displayAdminDashboard();
+            }
+        }
+
+        function deleteAdmin(username) {
+            if (username === 'admin') {
+                alert('Cannot delete the default admin account');
+                return;
+            }
+            if (confirm('Are you sure you want to delete this admin?')) {
+                const admins = JSON.parse(localStorage.getItem('admins') || '[]');
+                const filtered = admins.filter(a => a.username !== username);
+                localStorage.setItem('admins', JSON.stringify(filtered));
+                displayAdminDashboard();
+            }
+        }
+    </script>
+</body>
+</html>

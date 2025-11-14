@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - FB Live Shop</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="Website.html">FB Live Shop</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="Website.html">Products</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Login Container -->
+    <main class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <!-- Tab Selection -->
+                <ul class="nav nav-tabs mb-4" id="loginTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="customer-tab" data-bs-toggle="tab" data-bs-target="#customer" type="button" role="tab">Customer Login</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="admin-tab" data-bs-toggle="tab" data-bs-target="#admin" type="button" role="tab">Admin Login</button>
+                    </li>
+                </ul>
+
+                <!-- Tab Content -->
+                <div class="tab-content" id="loginTabContent">
+                    <!-- Customer Login -->
+                    <div class="tab-pane fade show active" id="customer" role="tabpanel">
+                        <div class="card">
+                            <div class="card-body p-5">
+                                <h2 class="card-title text-center mb-4">Customer Login</h2>
+                                
+                                <form id="customerLoginForm">
+                                    <div class="mb-3">
+                                        <label for="customerUsername" class="form-label">Username</label>
+                                        <input type="text" class="form-control" id="customerUsername" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="customerPassword" class="form-label">Password</label>
+                                        <input type="password" class="form-control" id="customerPassword" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary w-100 mb-3">Login</button>
+                                </form>
+
+                                <div id="customerLoginMessage" class="alert alert-danger" style="display: none;"></div>
+
+                                <p class="text-center">
+                                    Don't have an account? <a href="signup.html">Sign up here</a>
+                                </p>
+
+                                <div class="d-grid gap-2 mt-3">
+                                    <button class="btn btn-outline-primary" id="fbLoginBtn" type="button">Login with Facebook</button>
+                                </div>
+
+                                <!-- Facebook Login Modal (simulated) -->
+                                <div class="modal fade" id="fbLoginModal" tabindex="-1">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Login with Facebook</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form id="fbLoginForm">
+                                                    <div class="mb-3">
+                                                        <label for="fbEmail" class="form-label">Facebook Email</label>
+                                                        <input type="email" class="form-control" id="fbEmail" required>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="fbName" class="form-label">Facebook Name (optional)</label>
+                                                        <input type="text" class="form-control" id="fbName">
+                                                    </div>
+                                                    <div class="text-end">
+                                                        <button type="submit" class="btn btn-primary">Continue</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Admin Login -->
+                    <div class="tab-pane fade" id="admin" role="tabpanel">
+                        <div class="card">
+                            <div class="card-body p-5">
+                                <h2 class="card-title text-center mb-4">Admin Login</h2>
+                                
+                                <form id="adminLoginForm">
+                                    <div class="mb-3">
+                                        <label for="adminUsername" class="form-label">Admin Username</label>
+                                        <input type="text" class="form-control" id="adminUsername" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="adminPassword" class="form-label">Admin Password</label>
+                                        <input type="password" class="form-control" id="adminPassword" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-danger w-100 mb-3">Admin Login</button>
+                                </form>
+
+                                <div id="adminLoginMessage" class="alert alert-danger" style="display: none;"></div>
+
+                                <p class="text-center text-muted small">
+                                    Default Admin Account: username: <strong>admin</strong>, password: <strong>admin123</strong>
+                                </p>
+                                <hr>
+                                <p class="text-center">
+                                    Need to create a new admin account? <a href="admin-signup.html">Sign up here</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
+    <script>
+        // Check if user is already logged in
+        if (getCurrentUser()) {
+            window.location.href = 'Website.html';
+        }
+
+        // Customer Login
+        document.getElementById('customerLoginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('customerUsername').value.trim();
+            const password = document.getElementById('customerPassword').value;
+            const messageDiv = document.getElementById('customerLoginMessage');
+
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const hashedPassword = await hashPassword(password);
+            
+            const user = users.find(u => u.username === username && u.password === hashedPassword && u.role === 'customer');
+            
+            if (user) {
+                setCurrentUser({ username: user.username, role: 'customer' });
+                window.location.href = 'Website.html';
+            } else {
+                messageDiv.textContent = 'Invalid username or password';
+                messageDiv.style.display = 'block';
+            }
+        });
+
+        // Admin Login
+        document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('adminUsername').value.trim();
+            const password = document.getElementById('adminPassword').value;
+            const messageDiv = document.getElementById('adminLoginMessage');
+
+            const admins = JSON.parse(localStorage.getItem('admins') || '[]');
+            
+            // Initialize default admin if no admins exist
+            if (admins.length === 0) {
+                const hashedPassword = await hashPassword('admin123');
+                admins.push({ username: 'admin', password: hashedPassword });
+                localStorage.setItem('admins', JSON.stringify(admins));
+            }
+
+            const hashedPassword = await hashPassword(password);
+            const admin = admins.find(a => a.username === username && a.password === hashedPassword);
+            
+            if (admin) {
+                setCurrentUser({ username: admin.username, role: 'admin' });
+                window.location.href = 'admin.html';
+            } else {
+                messageDiv.textContent = 'Invalid admin credentials';
+                messageDiv.style.display = 'block';
+            }
+        });
+
+        // Facebook (simulated) login flow
+        const fbLoginBtn = document.getElementById('fbLoginBtn');
+        if (fbLoginBtn) {
+            fbLoginBtn.addEventListener('click', () => {
+                const modalEl = document.getElementById('fbLoginModal');
+                const modal = new bootstrap.Modal(modalEl);
+                modal.show();
+            });
+        }
+
+        const fbLoginForm = document.getElementById('fbLoginForm');
+        if (fbLoginForm) {
+            fbLoginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = document.getElementById('fbEmail').value.trim();
+                const name = document.getElementById('fbName').value.trim();
+                await fbLogin(email, name);
+            });
+        }
+    </script>
+</body>
+</html>
