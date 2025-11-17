@@ -189,7 +189,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="createProductBtn">Create Product</button>
+                    <button type="button" class="btn btn-primary" onclick="handleCreateProduct()">Create Product</button>
                 </div>
             </div>
         </div>
@@ -270,14 +270,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="app.js"></script>
     <script>
-        // Check if admin is logged in
-        const currentUser = getCurrentUser();
-        if (!currentUser || currentUser.role !== 'admin') {
-            window.location.href = 'login.html';
-        }
-
-        // Initialize admin dashboard
+        // Check if admin is logged in (moved inside DOMContentLoaded to ensure functions exist)
         document.addEventListener('DOMContentLoaded', () => {
+            const currentUser = getCurrentUser();
+            if (!currentUser || currentUser.role !== 'admin') {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // Initialize admin dashboard
             updateAuthNav();
             displayAdminDashboard();
             setupAdminEventListeners();
@@ -332,40 +333,40 @@
             `).join('');
         }
 
-        function setupAdminEventListeners() {
-            // Add product
-            const createProductBtn = document.getElementById('createProductBtn');
-            if (createProductBtn) {
-                // Remove any previous listeners by cloning the element
-                const newBtn = createProductBtn.cloneNode(true);
-                createProductBtn.parentNode.replaceChild(newBtn, createProductBtn);
-                
-                newBtn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const name = document.getElementById('productName').value.trim();
-                    const price = document.getElementById('productPrice').value;
-                    const image = document.getElementById('productImage').value.trim();
-                    const description = document.getElementById('productDescription').value.trim();
-                    const colorsRaw = document.getElementById('productColors') ? document.getElementById('productColors').value : '';
-                    const sizesRaw = document.getElementById('productSizes') ? document.getElementById('productSizes').value : '';
-                    const colors = colorsRaw ? colorsRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
-                    const sizes = sizesRaw ? sizesRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
+        function handleCreateProduct() {
+            console.log('handleCreateProduct called');
+            const name = document.getElementById('productName').value.trim();
+            const price = document.getElementById('productPrice').value;
+            const image = document.getElementById('productImage').value.trim();
+            const description = document.getElementById('productDescription').value.trim();
+            const colorsRaw = document.getElementById('productColors') ? document.getElementById('productColors').value : '';
+            const sizesRaw = document.getElementById('productSizes') ? document.getElementById('productSizes').value : '';
+            const colors = colorsRaw ? colorsRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
+            const sizes = sizesRaw ? sizesRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
 
-                    if (!name || !price) {
-                        alert('Please fill in required fields');
-                        return;
-                    }
+            console.log('Form values:', { name, price, image, description, colors, sizes });
 
-                    createProduct(name, price, image, description, colors, sizes);
-                    displayAdminDashboard();
-                    document.getElementById('addProductForm').reset();
-                    
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('addProductModal'));
-                    if (modal) modal.hide();
-                });
+            if (!name || !price) {
+                alert('Please fill in name and price');
+                return;
             }
 
-            // Add admin
+            console.log('Creating product...');
+            createProduct(name, price, image, description, colors, sizes);
+            console.log('Product created, resetting form and dashboard');
+            document.getElementById('addProductForm').reset();
+            displayAdminDashboard();
+            
+            // Close modal
+            const modalEl = document.getElementById('addProductModal');
+            const modal = bootstrap.Modal.getInstance(modalEl);
+            if (modal) modal.hide();
+            
+            alert('Product created successfully!');
+        }
+
+        function setupAdminEventListeners() {
+            // Add admin button listener
             const createAdminBtn = document.getElementById('createAdminBtn');
             if (createAdminBtn) {
                 createAdminBtn.addEventListener('click', async () => {
