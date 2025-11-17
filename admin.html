@@ -177,6 +177,14 @@
                             <label for="productDescription" class="form-label">Description</label>
                             <textarea class="form-control" id="productDescription" rows="3"></textarea>
                         </div>
+                        <div class="mb-3">
+                            <label for="productColors" class="form-label">Available Colors (comma separated)</label>
+                            <input type="text" class="form-control" id="productColors" placeholder="Red,Blue,Black">
+                        </div>
+                        <div class="mb-3">
+                            <label for="productSizes" class="form-label">Available Sizes (comma separated)</label>
+                            <input type="text" class="form-control" id="productSizes" placeholder="S,M,L">
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -212,6 +220,14 @@
                         <div class="mb-3">
                             <label for="editProductDescription" class="form-label">Description</label>
                             <textarea class="form-control" id="editProductDescription" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editProductColors" class="form-label">Available Colors (comma separated)</label>
+                            <input type="text" class="form-control" id="editProductColors" placeholder="Red,Blue,Black">
+                        </div>
+                        <div class="mb-3">
+                            <label for="editProductSizes" class="form-label">Available Sizes (comma separated)</label>
+                            <input type="text" class="form-control" id="editProductSizes" placeholder="S,M,L">
                         </div>
                     </form>
                 </div>
@@ -326,13 +342,17 @@
                     const price = document.getElementById('productPrice').value;
                     const image = document.getElementById('productImage').value.trim();
                     const description = document.getElementById('productDescription').value.trim();
+                    const colorsRaw = document.getElementById('productColors') ? document.getElementById('productColors').value : '';
+                    const sizesRaw = document.getElementById('productSizes') ? document.getElementById('productSizes').value : '';
+                    const colors = colorsRaw ? colorsRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
+                    const sizes = sizesRaw ? sizesRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
 
                     if (!name || !price) {
                         alert('Please fill in required fields');
                         return;
                     }
 
-                    createProduct(name, price, image, description);
+                    createProduct(name, price, image, description, colors, sizes);
                     displayAdminDashboard();
                     document.getElementById('addProductForm').reset();
                     
@@ -380,6 +400,8 @@
             document.getElementById('editProductPrice').value = product.price;
             document.getElementById('editProductImage').value = product.image;
             document.getElementById('editProductDescription').value = product.description || '';
+            document.getElementById('editProductColors').value = product.colors ? product.colors.join(',') : '';
+            document.getElementById('editProductSizes').value = product.sizes ? product.sizes.join(',') : '';
 
             const modal = new bootstrap.Modal(document.getElementById('editProductModal'));
             modal.show();
@@ -390,13 +412,17 @@
                 const price = document.getElementById('editProductPrice').value;
                 const image = document.getElementById('editProductImage').value.trim();
                 const description = document.getElementById('editProductDescription').value.trim();
+                const colorsRaw = document.getElementById('editProductColors') ? document.getElementById('editProductColors').value : '';
+                const sizesRaw = document.getElementById('editProductSizes') ? document.getElementById('editProductSizes').value : '';
+                const colors = colorsRaw ? colorsRaw.split(',').map(s => s.trim()).filter(Boolean) : undefined;
+                const sizes = sizesRaw ? sizesRaw.split(',').map(s => s.trim()).filter(Boolean) : undefined;
 
                 if (!name || !price) {
                     alert('Please fill in required fields');
                     return;
                 }
 
-                updateProduct(id, name, price, image, description);
+                updateProduct(id, name, price, image, description, colors, sizes);
                 displayAdminDashboard();
                 modal.hide();
             };
