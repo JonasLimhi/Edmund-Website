@@ -297,7 +297,10 @@
 
             // Display products table
             const productsTableBody = document.getElementById('productsTableBody');
-            productsTableBody.innerHTML = products.map(product => `
+            console.log('Products:', products);
+            console.log('productsTableBody element:', productsTableBody);
+            if (productsTableBody) {
+                const html = products.map(product => `
                 <tr>
                     <td>${escapeHtml(product.name)}</td>
                     <td>$${product.price.toFixed(2)}</td>
@@ -308,6 +311,11 @@
                     </td>
                 </tr>
             `).join('');
+                console.log('HTML to insert:', html);
+                productsTableBody.innerHTML = html;
+            } else {
+                console.log('productsTableBody not found!');
+            }
 
             // Display users table
             const usersTableBody = document.getElementById('usersTableBody');
