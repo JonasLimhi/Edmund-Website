@@ -119,10 +119,7 @@
 
                                 <div id="adminLoginMessage" class="alert alert-danger" style="display: none;"></div>
 
-                                <p class="text-center text-muted small">
-                                    Default Admin Account: username: <strong>admin</strong>, password: <strong>admin123</strong>
-                                </p>
-                                <hr>
+                                
                                 <p class="text-center">
                                     Need to create a new admin account? <a href="admin-signup.html">Sign up here</a>
                                 </p>
@@ -174,12 +171,7 @@
 
             const admins = JSON.parse(localStorage.getItem('admins') || '[]');
             
-            // Initialize default admin if no admins exist
-            if (admins.length === 0) {
-                const hashedPassword = await hashPassword('admin123');
-                admins.push({ username: 'admin', password: hashedPassword });
-                localStorage.setItem('admins', JSON.stringify(admins));
-            }
+            // Note: no default admin is auto-created. Create admins via admin-signup.html
 
             const hashedPassword = await hashPassword(password);
             const admin = admins.find(a => a.username === username && a.password === hashedPassword);
