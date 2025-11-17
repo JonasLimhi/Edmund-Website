@@ -326,8 +326,7 @@
                 <tr>
                     <td>${escapeHtml(admin.username)}</td>
                     <td>
-                        ${admin.username === 'admin' ? '<span class="badge bg-danger">Default Admin</span>' : 
-                        '<button class="btn btn-sm btn-danger" onclick="deleteAdmin(\''+admin.username+'\')">Delete</button>'}
+                        <button class="btn btn-sm btn-danger" onclick="deleteAdmin('${admin.username}')">Delete</button>
                     </td>
                 </tr>
             `).join('');
@@ -337,7 +336,12 @@
             // Add product
             const createProductBtn = document.getElementById('createProductBtn');
             if (createProductBtn) {
-                createProductBtn.addEventListener('click', () => {
+                // Remove any previous listeners by cloning the element
+                const newBtn = createProductBtn.cloneNode(true);
+                createProductBtn.parentNode.replaceChild(newBtn, createProductBtn);
+                
+                newBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
                     const name = document.getElementById('productName').value.trim();
                     const price = document.getElementById('productPrice').value;
                     const image = document.getElementById('productImage').value.trim();
@@ -445,10 +449,6 @@
         }
 
         function deleteAdmin(username) {
-            if (username === 'admin') {
-                alert('Cannot delete the default admin account');
-                return;
-            }
             if (confirm('Are you sure you want to delete this admin?')) {
                 const admins = JSON.parse(localStorage.getItem('admins') || '[]');
                 const filtered = admins.filter(a => a.username !== username);
